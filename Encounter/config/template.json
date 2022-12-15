@@ -1,0 +1,42 @@
+{
+  "resourceType": "",
+  "identifier": [
+    {
+      "value": ""
+    }
+  ],
+  "class": {
+    "code": ""
+  },
+  "priority": {
+    "coding": [
+      {
+        "code": ""
+      }
+    ]
+  },
+  "period": {
+    "start": "",
+    "end": ""
+  },
+  "hospitalization": {
+    "admitSource": {
+      "coding": [
+        {
+          "code": ""
+        }
+      ]
+    }
+  },
+  "location": [
+    {
+      "location": {
+        "reference": ""
+      },
+      "period": {
+        "start": "",
+        "end": ""
+      }
+    }
+  ]
+}
