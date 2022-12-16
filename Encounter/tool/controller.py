@@ -1,20 +1,30 @@
-import pandas as pd
-import tool.blueprint as blueprint
 import json
+
+import pandas as pd
+
+import tool.blueprint as blueprint
 
 
 class Encounter(object):
-    def __init__(self, admissions_path: str, transfers_path: str, file_name: str = "") -> None:
-        self.admissions_csv = pd.read_csv(admissions_path).head(100)
-        self.transfers_csv = pd.read_csv(transfers_path).head(1000)
+    def __init__(self, admissions_path: str, transfers_path: str, location_path: str, file_name: str = "") -> None:
+        self.admissions_csv = pd.read_csv(admissions_path)
+        self.transfers_csv = pd.read_csv(transfers_path)
+        self.location_ndjson = pd.read_json(location_path, lines=True)
         self.index_t = 0
         self.json_content = []
         self.file_name = './transferData/' + file_name + ".json"
         if file_name == "":
             self.file_name = './transferData/encounter.json'
 
+    def name_to_id(self, name: str) -> str:
+        for index in self.location_ndjson.index:
+            if self.location_ndjson['name'][index] == name:
+                return self.location_ndjson['id'][index]
+        return "null"
+
     def transfer(self) -> None:
         for index_a in self.admissions_csv.index:
+            print(f"{index_a * 100 / len(self.admissions_csv.index)} % ")
             template = blueprint.EncounterTemplate()
             temp_template = template.__dict__
             try:
@@ -45,7 +55,8 @@ class Encounter(object):
                     if self.transfers_csv["hadm_id"][self.index_t] == self.admissions_csv["hadm_id"][index_a]:
                         temp_location = {
                             "location": {
-                                "reference": "Location/" + str(self.transfers_csv['careunit'][self.index_t])
+                                "reference": "Location/" + str(
+                                    self.name_to_id(self.transfers_csv['careunit'][self.index_t]))
                             },
                             "period": {
                                 "start": str(self.transfers_csv['intime'][self.index_t]),
@@ -68,6 +79,7 @@ class Encounter(object):
             self.json_content.append(temp_template)
 
     def write(self) -> None:
+        print("Writing json file...")
         with open(self.file_name, 'w') as file:
             json.dump(self.json_content, file, indent=4)
 
