@@ -75,7 +75,7 @@ class Encounter(object):
                     else:
                         break
             except Exception as e:
-                pass
+                print(e)
             self.json_content.append(temp_template)
 
     def write(self) -> None:
