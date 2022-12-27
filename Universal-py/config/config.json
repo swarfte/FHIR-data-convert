@@ -1,0 +1,9 @@
+{
+  "template": "Patient",
+  "source": [
+    "patients",
+    "admissions"
+  ],
+  "primaryKey": "patients",
+  "row": "0"
+}
